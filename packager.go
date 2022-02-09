@@ -48,6 +48,7 @@ func PackFolder(folder string, output string) error {
 }
 
 func Unpack(src string, dst string) error {
+
 	file, err := os.Open(src)
 	defer file.Close()
 	if err != nil {
@@ -73,14 +74,24 @@ func Unpack(src string, dst string) error {
 		}
 
 		if fHeader.Typeflag == tar.TypeReg {
+
 			buffer := make([]byte, fHeader.Size)
 			tr.Read(buffer)
+
 			f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY, os.FileMode(fHeader.Mode))
 			if err != nil {
 				return err
 			}
-			f.Write(buffer)
-			f.Close()
+
+			_, err = f.Write(buffer)
+			if err != nil {
+				return err
+			}
+
+			err = f.Close()
+			if err != nil {
+				return err
+			}
 		}
 	} // End for
 }
