@@ -26,7 +26,7 @@ func compareFiles(file1 string, file2 string) bool {
 func TestPackFolder(t *testing.T) {
 	folder := "testfolder"
 	output := "packed"
-	defer os.Remove(output + ".tar")
+	defer os.Remove("packed.tar")
 
 	err := PackFolder(folder, output)
 	if err != nil {
@@ -36,4 +36,18 @@ func TestPackFolder(t *testing.T) {
 	if !compareFiles("packed.tar", "testmodels/packed.tar") {
 		t.Fatalf("Not valid tar file format")
 	}
+}
+
+func TestUnpack(t *testing.T) {
+	dst := "tmp"
+	src := "testmodels/packed.tar"
+	os.Mkdir(dst, 0777)
+	err := Unpack(src, dst)
+	if err != nil {
+		t.Fatalf("Error unpacking")
+	}
+	if !compareFiles("testfolder/samples2/samples21/file6.txt", "tmp/testfolder/samples2/samples21/file6.txt") {
+		t.Fatalf("Not valid unpacked files")
+	}
+	os.RemoveAll("tmp/")
 }
