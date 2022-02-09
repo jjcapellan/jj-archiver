@@ -8,20 +8,44 @@ import (
 	"path/filepath"
 )
 
-func writeTarHeader(path string, tw *tar.Writer) {
-	fInfo, _ := os.Stat(path)
-	fHeader, _ := tar.FileInfoHeader(fInfo, "")
+func writeTarHeader(path string, tw *tar.Writer) error {
+	var err error
+
+	fInfo, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+
+	fHeader, err := tar.FileInfoHeader(fInfo, "")
+	if err != nil {
+		return err
+	}
+
 	fHeader.Name = path
-	tw.WriteHeader(fHeader)
+	err = tw.WriteHeader(fHeader)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func writeTarBody(path string, tw *tar.Writer) {
-	body, _ := readFile(path)
-	tw.Write(body)
+func writeTarBody(path string, tw *tar.Writer) error {
+	var err error
+	body, err := readFile(path)
+	if err != nil {
+		return err
+	}
+	_, err = tw.Write(body)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // PackFolder packages a folder into a tar file ("output.tar")
 func PackFolder(folder string, output string) error {
+	var err error
 	var buffer bytes.Buffer
 
 	tw := tar.NewWriter(&buffer)
@@ -29,17 +53,26 @@ func PackFolder(folder string, output string) error {
 	fileNames, dirNames := listFolder(folder)
 
 	for _, path := range dirNames {
-		writeTarHeader(path, tw)
+		err = writeTarHeader(path, tw)
+		if err != nil {
+			return err
+		}
 	}
 
 	for _, path := range fileNames {
-		writeTarHeader(path, tw)
-		writeTarBody(path, tw)
+		err = writeTarHeader(path, tw)
+		if err != nil {
+			return err
+		}
+		err = writeTarBody(path, tw)
+		if err != nil {
+			return err
+		}
 	}
 
 	tw.Close()
 
-	err := os.WriteFile(output+".tar", buffer.Bytes(), 0666)
+	err = os.WriteFile(output+".tar", buffer.Bytes(), 0666)
 	if err != nil {
 		return err
 	}
