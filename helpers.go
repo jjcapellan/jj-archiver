@@ -7,9 +7,10 @@ import (
 	"path/filepath"
 )
 
-// listFolder returns a slice with all root folder file paths
-func listFolder(root string) []string {
+// listFolder returns 2 slices with files and folders paths
+func listFolder(root string) (files []string, folders []string) {
 	var fls []string
+	var dirs []string
 
 	folderInfo, err := ioutil.ReadDir(root)
 	if err != nil {
@@ -20,10 +21,13 @@ func listFolder(root string) []string {
 		if !fileInfo.IsDir() {
 			fls = append(fls, filepath.Join(root, fileInfo.Name()))
 		} else {
-			fls = append(fls, listFolder(filepath.Join(root, fileInfo.Name()))...)
+			dirs = append(dirs, filepath.Join(root, fileInfo.Name()))
+			subFls, subDirs := listFolder(filepath.Join(root, fileInfo.Name()))
+			dirs = append(dirs, subDirs...)
+			fls = append(fls, subFls...)
 		}
 	}
-	return fls
+	return fls, dirs
 }
 
 func readFile(fileName string) ([]byte, error) {
