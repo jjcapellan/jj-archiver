@@ -47,6 +47,7 @@ func PackFolder(folder string, output string) error {
 	return nil
 }
 
+// Unpack extracts all files from a tar file (src) to path dst
 func Unpack(src string, dst string) error {
 
 	file, err := os.Open(src)
