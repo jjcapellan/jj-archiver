@@ -1,3 +1,7 @@
+## v0.1.1-alpha
+### Bug Fixes
+* **PackFolder** returns an error when the *output* parameter contains a directory that does'nt exist.  
+
 ## v0.1.0-alpha
 ### New features
 * **PackFolder(folder string, output string) error** . This function packages the contents of a folder into a "tar" file.
