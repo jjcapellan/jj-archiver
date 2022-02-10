@@ -3,9 +3,54 @@ package archiver
 import (
 	"bytes"
 	"compress/gzip"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )
+
+// Unzip takes a gzip file (src) and uncompress it in dst directory.
+//
+// If destination is not defined (dst == "") then uses current directory.
+func UnZip(src string, dst string) error {
+	f, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+
+	zr, err := gzip.NewReader(f)
+	if err != nil {
+		return err
+	}
+
+	fName := zr.Name
+
+	defer zr.Close()
+	defer f.Close()
+
+	result, _ := ioutil.ReadAll(zr)
+
+	if dst == "" {
+		dst = fName
+	} else {
+		if _, err := os.Stat(dst); os.IsNotExist(err) {
+			os.MkdirAll(dst, 0777)
+		}
+		dst = filepath.Join(dst, fName)
+	}
+
+	err = os.WriteFile(dst, result, 0777)
+	if err != nil {
+		return err
+	}
+
+	err = zr.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
 
 // Zip takes a file (src) a compress it using gzip algorithm into
 // a defined place (dst) with ".gz" file extension.
@@ -21,6 +66,9 @@ func Zip(src string, dst string) error {
 	if err != nil {
 		return err
 	}
+
+	// Saves original name in header
+	_, zw.Header.Name = filepath.Split(src)
 
 	_, err = zw.Write(b)
 	if err != nil {
