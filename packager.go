@@ -9,8 +9,6 @@ import (
 )
 
 func writeTarHeader(path string, tw *tar.Writer) error {
-	var err error
-
 	fInfo, err := os.Stat(path)
 	if err != nil {
 		return err
@@ -31,7 +29,6 @@ func writeTarHeader(path string, tw *tar.Writer) error {
 }
 
 func writeTarBody(path string, tw *tar.Writer) error {
-	var err error
 	body, err := readFile(path)
 	if err != nil {
 		return err
@@ -45,7 +42,6 @@ func writeTarBody(path string, tw *tar.Writer) error {
 
 // PackFolder packages a folder into a tar file ("output.tar")
 func PackFolder(folder string, output string) error {
-	var err error
 	var buffer bytes.Buffer
 
 	tw := tar.NewWriter(&buffer)
@@ -53,14 +49,14 @@ func PackFolder(folder string, output string) error {
 	fileNames, dirNames := listFolder(folder)
 
 	for _, path := range dirNames {
-		err = writeTarHeader(path, tw)
+		err := writeTarHeader(path, tw)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, path := range fileNames {
-		err = writeTarHeader(path, tw)
+		err := writeTarHeader(path, tw)
 		if err != nil {
 			return err
 		}
@@ -78,7 +74,7 @@ func PackFolder(folder string, output string) error {
 		os.MkdirAll(dir, 0777)
 	}
 
-	err = os.WriteFile(filepath.Join(dir, fName)+".tar", buffer.Bytes(), 0777)
+	err := os.WriteFile(filepath.Join(dir, fName)+".tar", buffer.Bytes(), 0777)
 	if err != nil {
 		return err
 	}
@@ -98,7 +94,6 @@ func Unpack(src string, dst string) error {
 	tr := tar.NewReader(file)
 
 	for {
-		var err error
 		fHeader, err := tr.Next()
 
 		if err == io.EOF {

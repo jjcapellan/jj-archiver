@@ -31,8 +31,6 @@ func listFolder(root string) (files []string, folders []string) {
 }
 
 func readFile(fileName string) ([]byte, error) {
-	var err error
-
 	f, err := os.Open(fileName)
 	defer f.Close()
 	if err != nil {
