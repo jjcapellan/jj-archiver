@@ -1,6 +1,7 @@
 ## v0.2.0-alpha
 ## New features
-* **Zip(src string, dst string)** . Compress "src" file into "dst" file with extension ".gz" using *gzip* algorithm. If destination is not defined (dst == "") then the compressed file will be saved in current directory with source name plus ".gz" extension.
+* **Zip(src string, dst string) error** . Compress "src" file into "dst" file with extension ".gz" using *gzip* algorithm. If destination is not defined (dst == "") then the compressed file will be saved in current directory with source name plus ".gz" extension.
+* **UnZip(src string, dst string) error** . Uncompress gzip file into dst directory. If dst == "" then uses current directory.
 
 ## v0.1.1-alpha
 ### Bug Fixes
