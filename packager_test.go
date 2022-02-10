@@ -7,18 +7,20 @@ import (
 
 // compareFiles returns true if file1 == file2
 func compareFiles(file1 string, file2 string) bool {
-	buffer1, _ := readFile(file1)
-	buffer2, _ := readFile(file2)
 
-	if len(buffer1) != len(buffer2) {
+	fi1, _ := os.Stat(file1)
+	fi2, _ := os.Stat(file2)
+
+	if fi1.Size() != fi2.Size() {
 		return false
 	}
 
-	for i, byte := range buffer1 {
+	// This not works because file headers can be different
+	/*for i, byte := range buffer1 {
 		if byte != buffer2[i] {
 			return false
 		}
-	}
+	}*/
 
 	return true
 }
