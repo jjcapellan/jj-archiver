@@ -25,15 +25,37 @@ func compareFiles(file1 string, file2 string) bool {
 
 func TestPackFolder(t *testing.T) {
 	folder := "testfolder"
-	output := "packed"
+	output1 := "packed"
+	output2 := "unpackfolder1/packed"
+	output3 := "unpackfolder2/subfolder/packed"
 	defer os.Remove("packed.tar")
+	defer os.RemoveAll("unpackfolder1/")
+	defer os.RemoveAll("unpackfolder2/")
 
-	err := PackFolder(folder, output)
+	err := PackFolder(folder, output1)
 	if err != nil {
-		t.Fatalf("Error packaging folder: %s", err)
+		t.Fatalf("Error packaging folder \"testfolder\" in \"%s\": %s", output1+"tar", err)
 	}
 
-	if !compareFiles("packed.tar", "testmodels/packed.tar") {
+	if !compareFiles(output1+".tar", "testmodels/packed.tar") {
+		t.Fatalf("Not valid tar file format")
+	}
+
+	err = PackFolder(folder, output2)
+	if err != nil {
+		t.Fatalf("Error packaging folder \"testfolder\" in \"%s\": %s", output1+"tar", err)
+	}
+
+	if !compareFiles(output2+".tar", "testmodels/packed.tar") {
+		t.Fatalf("Not valid tar file format")
+	}
+
+	err = PackFolder(folder, output3)
+	if err != nil {
+		t.Fatalf("Error packaging folder \"testfolder\" in \"%s\": %s", output3+"tar", err)
+	}
+
+	if !compareFiles(output3+".tar", "testmodels/packed.tar") {
 		t.Fatalf("Not valid tar file format")
 	}
 }
