@@ -1,3 +1,7 @@
+## v0.2.0-alpha
+## New features
+* **Zip(src string, dst string)** . Compress "src" file into "dst" file with extension ".gz" using *gzip* algorithm. If destination is not defined (dst == "") then the compressed file will be saved in current directory with source name plus ".gz" extension.
+
 ## v0.1.1-alpha
 ### Bug Fixes
 * **PackFolder** returns an error when the *output* parameter contains a directory that does'nt exist.  
