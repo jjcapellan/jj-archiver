@@ -53,12 +53,12 @@ func UnZip(src string, dst string) error {
 }
 
 // Zip takes a file (src) a compress it using gzip algorithm into
-// a defined place (dst) with ".gz" file extension.
+// a defined directory (dstDir) with ".gz" file extension.
 //
-// If dst == "" then gz file is saved in current directory.
+// If dstDir == "" then gz file is saved in current directory.
 //
 // Example: Zip("folder1/file.tar", "") produces "./file.tar.gz"
-func Zip(src string, dst string) error {
+func Zip(src string, dstDir string) error {
 	var buffer bytes.Buffer
 	zw := gzip.NewWriter(&buffer)
 
@@ -80,20 +80,19 @@ func Zip(src string, dst string) error {
 		return err
 	}
 
-	dir, fName := filepath.Split(dst)
-	if dst == "" {
-		_, fName = filepath.Split(src)
-		dst = fName + ".gz"
+	_, fName := filepath.Split(src)
+	if dstDir == "" {
+		dstDir = fName
 	} else {
-		dst = filepath.Join(dir, fName) + ".gz"
-	}
-	if dir != "" {
-		if _, err := os.Stat(dir); os.IsNotExist(err) {
-			os.MkdirAll(dir, 0777)
+		dstDir = filepath.Join(dstDir)
+		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
+			os.MkdirAll(dstDir, 0777)
 		}
+		dstDir = filepath.Join(dstDir, fName)
 	}
+	dstDir += ".gz"
 
-	err = os.WriteFile(dst, buffer.Bytes(), 0666)
+	err = os.WriteFile(dstDir, buffer.Bytes(), 0666)
 	if err != nil {
 		return err
 	}

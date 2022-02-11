@@ -21,24 +21,14 @@ func TestUnZip(t *testing.T) {
 
 func TestZip(t *testing.T) {
 	src := "testmodels/packed.tar"
-	dst1 := ""
-	dst2 := "zipfolder/subfolder/packed"
-	defer os.Remove("packed.tar.gz")
-	defer os.RemoveAll("zipfolder/")
+	dst := "testzip"
+	defer os.RemoveAll("testzip/")
 
-	err := Zip(src, dst1)
+	err := Zip(src, dst)
 	if err != nil {
-		t.Fatalf("Error compressing \"%s\" to \"%s\": %s", src, dst1, err)
+		t.Fatalf("Error compressing \"%s\" to \"%s\": %s", src, dst, err)
 	}
-	if !compareFiles(src+".gz", "packed.tar.gz") {
-		t.Fatalf("Not valid gzip format")
-	}
-
-	err = Zip(src, dst2)
-	if err != nil {
-		t.Fatalf("Error compressing \"%s\" to \"%s\": %s", src, dst2, err)
-	}
-	if !compareFiles(src+".gz", dst2+".gz") {
+	if !compareFiles(src+".gz", dst+"/packed.tar.gz") {
 		t.Fatalf("Not valid gzip format")
 	}
 }
