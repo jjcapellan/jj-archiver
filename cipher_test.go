@@ -22,11 +22,21 @@ func TestDecrypt(t *testing.T) {
 
 func TestEncrypt(t *testing.T) {
 	src := "testmodels/packed.tar.gz"
-	dst := ""
+	dst := "testencrypt"
 	password := "axdcf"
+	defer os.RemoveAll("testencrypt/")
 
 	err := Encrypt(src, dst, password)
 	if err != nil {
 		t.Fatalf("Encryption error: %s", err.Error())
+	}
+
+	err = Decrypt(dst+"/packed.tar.gz.crp", dst+"/packed.tar.gz", password)
+	if err != nil {
+		t.Fatalf("Decryption error: %s", err.Error())
+	}
+
+	if !compareFiles("testmodels/packed.tar.gz", dst+"/packed.tar.gz") {
+		t.Fatalf("Not valid encrypted file")
 	}
 }

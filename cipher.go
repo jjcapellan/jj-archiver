@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-func Encrypt(src string, dst string, password string) error {
+func Encrypt(src string, dstDir string, password string) error {
 	buffer, err := readFile(src)
 	if err != nil {
 		return err
@@ -39,20 +39,19 @@ func Encrypt(src string, dst string, password string) error {
 
 	result := gcm.Seal(nonce, nonce, buffer, nil)
 
-	dir, fName := filepath.Split(dst)
-	if dst == "" {
-		_, fName = filepath.Split(src)
-		dst = fName + ".crp"
+	_, fName := filepath.Split(src)
+	if dstDir == "" {
+		dstDir = fName
 	} else {
-		dst = filepath.Join(dir, fName) + ".crp"
-	}
-	if dir != "" {
-		if _, err := os.Stat(dir); os.IsNotExist(err) {
-			os.MkdirAll(dir, 0777)
+		dstDir = filepath.Join(dstDir)
+		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
+			os.MkdirAll(dstDir, 0777)
 		}
+		dstDir = filepath.Join(dstDir, fName)
 	}
+	dstDir += ".crp"
 
-	err = os.WriteFile(dst, result, 0666)
+	err = os.WriteFile(dstDir, result, 0666)
 	if err != nil {
 		return err
 	}
