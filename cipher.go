@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
+	"errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -59,7 +60,11 @@ func Encrypt(src string, dstDir string, password string) error {
 	return nil
 }
 
-func Decrypt(src string, dst string, password string) error {
+func Decrypt(src string, dstDir string, password string) error {
+	if filepath.Ext(src) != ".crp" {
+		return errors.New("Unrecognized file extension")
+	}
+
 	buffer, err := readFile(src)
 	if err != nil {
 		return err
@@ -89,25 +94,23 @@ func Decrypt(src string, dst string, password string) error {
 		return err
 	}
 
-	dir, fName := filepath.Split(dst)
-	if dst == "" {
-		_, fName = filepath.Split(src)
-		fName = fName[:(len(fName) - 4)]
-		dst = fName
+	_, fName := filepath.Split(src)
+	fName = fName[:(len(fName) - 4)]
+
+	if dstDir == "" {
+		dstDir = fName
 	} else {
-		dst = filepath.Join(dir, fName)
-	}
-	if dir != "" {
-		if _, err := os.Stat(dir); os.IsNotExist(err) {
-			os.MkdirAll(dir, 0777)
+		dstDir = filepath.Join(dstDir)
+		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
+			os.MkdirAll(dstDir, 0777)
 		}
+		dstDir = filepath.Join(dstDir, fName)
 	}
 
-	err = os.WriteFile(dst, content, 0777)
+	err = os.WriteFile(dstDir, content, 0777)
 	if err != nil {
 		return err
 	}
 
 	return nil
-
 }

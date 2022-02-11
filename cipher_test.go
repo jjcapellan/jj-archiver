@@ -6,16 +6,16 @@ import (
 )
 
 func TestDecrypt(t *testing.T) {
-	src := "testmodels/packed2.tar.gz.crp"
-	dst := ""
+	src := "testmodels/packed.tar.gz.crp"
+	dst := "testdecrypt"
 	password := "axdcf"
-	defer os.Remove("packed2.tar.gz")
+	defer os.RemoveAll("testdecrypt/")
 
 	err := Decrypt(src, dst, password)
 	if err != nil {
 		t.Fatalf("Decryption error: %s", err.Error())
 	}
-	if !compareFiles("testmodels/packed.tar.gz", "packed2.tar.gz") {
+	if !compareFiles("testmodels/packed.tar.gz", "testdecrypt/packed.tar.gz") {
 		t.Fatalf("Not valid decrypted file")
 	}
 }
@@ -31,7 +31,7 @@ func TestEncrypt(t *testing.T) {
 		t.Fatalf("Encryption error: %s", err.Error())
 	}
 
-	err = Decrypt(dst+"/packed.tar.gz.crp", dst+"/packed.tar.gz", password)
+	err = Decrypt(dst+"/packed.tar.gz.crp", dst, password)
 	if err != nil {
 		t.Fatalf("Decryption error: %s", err.Error())
 	}
