@@ -17,17 +17,7 @@ func Encrypt(src string, dstDir string, password string) error {
 		return err
 	}
 
-	// Gets 32 bytes long key from password
-	h := sha256.New()
-	h.Write([]byte(password))
-	key := h.Sum(nil)
-
-	c, err := aes.NewCipher(key)
-	if err != nil {
-		return err
-	}
-
-	gcm, err := cipher.NewGCM(c)
+	gcm, err := getGCM(password)
 	if err != nil {
 		return err
 	}
@@ -70,17 +60,7 @@ func Decrypt(src string, dstDir string, password string) error {
 		return err
 	}
 
-	// Gets 32 bytes long key from password
-	h := sha256.New()
-	h.Write([]byte(password))
-	key := h.Sum(nil)
-
-	c, err := aes.NewCipher(key)
-	if err != nil {
-		return err
-	}
-
-	gcm, err := cipher.NewGCM(c)
+	gcm, err := getGCM(password)
 	if err != nil {
 		return err
 	}
@@ -113,4 +93,26 @@ func Decrypt(src string, dstDir string, password string) error {
 	}
 
 	return nil
+}
+
+//// HELPERS
+
+func getGCM(password string) (cipher.AEAD, error) {
+
+	// Gets 32 bytes long key from password
+	h := sha256.New()
+	h.Write([]byte(password))
+	key := h.Sum(nil)
+
+	c, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		return nil, err
+	}
+
+	return gcm, nil
 }
