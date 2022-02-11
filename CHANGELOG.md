@@ -1,12 +1,22 @@
+## v0.3.0-alpha
+### New features
+* **Encrypt(src string, dst string, password string) error** . Reads "src" file and writes an encrypted file "dst" with extension ".crp". The same password is used to encrypt and decrypt the file. Uses AES256 encryption algorithm. Example: *Encrypt("folder/file.txt","plainfile.txt","mypass")*
+* **Decrypt(src string, dst string, password string) error**  . Decrypts "src" file.  
+  
+---
+
 ## v0.2.0-alpha
-## New features
+### New features
 * **Zip(src string, dst string) error** . Compress "src" file into "dst" file with extension ".gz" using *gzip* algorithm. If destination is not defined (dst == "") then the compressed file will be saved in current directory with source name plus ".gz" extension.
-* **UnZip(src string, dst string) error** . Uncompress gzip file into dst directory. If dst == "" then uses current directory.
+* **UnZip(src string, dst string) error** . Uncompress gzip file into dst directory. If dst == "" then uses current directory.  
+  
+---
 
 ## v0.1.1-alpha
 ### Bug Fixes
 * **PackFolder** returns an error when the *output* parameter contains a directory that does'nt exist.  
-
+  
+---
 ## v0.1.0-alpha
 ### New features
 * **PackFolder(folder string, output string) error** . This function packages the contents of a folder into a "tar" file.
