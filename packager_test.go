@@ -1,6 +1,7 @@
 package archiver
 
 import (
+	"bytes"
 	"os"
 	"testing"
 )
@@ -8,19 +9,16 @@ import (
 // compareFiles returns true if file1 == file2
 func compareFiles(file1 string, file2 string) bool {
 
-	fi1, _ := os.Stat(file1)
-	fi2, _ := os.Stat(file2)
+	b1, _ := readFile(file1)
+	b2, _ := readFile(file2)
 
-	if fi1.Size() != fi2.Size() {
+	if len(b1) != len(b2) {
 		return false
 	}
 
-	// This not works because file headers can be different
-	/*for i, byte := range buffer1 {
-		if byte != buffer2[i] {
-			return false
-		}
-	}*/
+	if bytes.Compare(b1, b2) != 0 {
+		return false
+	}
 
 	return true
 }
