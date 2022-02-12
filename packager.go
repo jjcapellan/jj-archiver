@@ -40,7 +40,10 @@ func writeTarBody(path string, tw *tar.Writer) error {
 	return nil
 }
 
-// PackFolder packages a folder into a tar file ("output.tar")
+// PackFolder packages input folder into output tar file.
+// ".tar" extension is added to the output file name.
+//
+// Example: PackFolder("user/projectsfolder", "projects") generates "./projects.tar"
 func PackFolder(input string, output string) error {
 	var buffer bytes.Buffer
 
@@ -82,7 +85,9 @@ func PackFolder(input string, output string) error {
 	return nil
 }
 
-// Unpack extracts all files from a tar file (src) to path dst
+// Unpack extracts all files from input tar file to output path.
+//
+// Example: Unpack("packedfiles/myfile.tar", "unpackedfolders/folder1")
 func Unpack(input string, output string) error {
 
 	file, err := os.Open(input)

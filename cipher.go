@@ -11,11 +11,15 @@ import (
 	"path/filepath"
 )
 
-// Encrypt encrypts file "src" into directory "dstDir" with the password.
+// Encrypt encrypts input file into output path using the password.
 // This function uses AES256 algorithm (mode GCM).
 //
 // Password lenght can be any not zero value. The password is processed by
 // the SHA256 hash algorithm to generate a 256-bit key.
+//
+// If output == "" then uses current directory.
+//
+// Example: Encrypt("projects.tar.gz", "") generates "./projects.tar.gz.crp"
 func Encrypt(input string, output string, password string) error {
 	buffer, err := readFile(input)
 	if err != nil {
@@ -48,9 +52,14 @@ func Encrypt(input string, output string, password string) error {
 	return nil
 }
 
-// Decrypt decrypts file "src" into directory "dstDir" with the password
-// used previously for encryp it.
+// Decrypt decrypts input file into output path using the password.
 // This function uses AES256 algorithm (mode GCM).
+//
+// Input file must have the extension ".crp"
+//
+// If output == "" then uses current directory.
+//
+// Example: Decrypt("projects.tar.gz.crp", "") generates "./projects.tar.gz"
 func Decrypt(input string, output string, password string) error {
 	if filepath.Ext(input) != ".crp" {
 		return errors.New("Unrecognized file extension")
