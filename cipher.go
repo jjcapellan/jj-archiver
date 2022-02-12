@@ -11,6 +11,11 @@ import (
 	"path/filepath"
 )
 
+// Encrypt encrypts file "src" into directory "dstDir" with the password.
+// This function uses AES256 algorithm (mode GCM).
+//
+// Password lenght can be any not zero value. The password is processed by
+// the SHA256 hash algorithm to generate a 256-bit key.
 func Encrypt(src string, dstDir string, password string) error {
 	buffer, err := readFile(src)
 	if err != nil {
@@ -43,6 +48,9 @@ func Encrypt(src string, dstDir string, password string) error {
 	return nil
 }
 
+// Decrypt decrypts file "src" into directory "dstDir" with the password
+// used previously for encryp it.
+// This function uses AES256 algorithm (mode GCM).
 func Decrypt(src string, dstDir string, password string) error {
 	if filepath.Ext(src) != ".crp" {
 		return errors.New("Unrecognized file extension")
