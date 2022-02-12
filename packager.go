@@ -40,7 +40,7 @@ func writeTarBody(path string, tw *tar.Writer) error {
 	return nil
 }
 
-// PackFolder packages input folder into output tar file.
+// PackFolder packs input folder into output tar file.
 // ".tar" extension is added to the output file name.
 //
 // Example: PackFolder("user/projectsfolder", "projects") generates "./projects.tar"
