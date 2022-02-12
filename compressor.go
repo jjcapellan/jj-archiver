@@ -80,19 +80,12 @@ func Zip(src string, dstDir string) error {
 		return err
 	}
 
-	_, fName := filepath.Split(src)
-	if dstDir == "" {
-		dstDir = fName
-	} else {
-		dstDir = filepath.Join(dstDir)
-		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
-			os.MkdirAll(dstDir, 0777)
-		}
-		dstDir = filepath.Join(dstDir, fName)
+	dst, err := prepareDst(src, dstDir, ".gz", false)
+	if err != nil {
+		return err
 	}
-	dstDir += ".gz"
 
-	err = os.WriteFile(dstDir, buffer.Bytes(), 0666)
+	err = os.WriteFile(dst, buffer.Bytes(), 0666)
 	if err != nil {
 		return err
 	}

@@ -30,6 +30,30 @@ func listFolder(root string) (files []string, folders []string) {
 	return fls, dirs
 }
 
+func prepareDst(src string, dstDir string, ext string, removeExt bool) (dst string, e error) {
+
+	_, fName := filepath.Split(src)
+	if removeExt {
+		fName = fName[:(len(fName) - len(ext))]
+	}
+	if dstDir == "" {
+		dstDir = fName
+	} else {
+		dstDir = filepath.Join(dstDir)
+		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
+			err = os.MkdirAll(dstDir, 0777)
+			if err != nil {
+				return "", err
+			}
+		}
+		dstDir = filepath.Join(dstDir, fName)
+	}
+	if !removeExt {
+		dstDir += ext
+	}
+	return dstDir, nil
+}
+
 func readFile(fileName string) ([]byte, error) {
 	f, err := os.Open(fileName)
 	defer f.Close()

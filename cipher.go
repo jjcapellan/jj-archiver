@@ -30,19 +30,12 @@ func Encrypt(src string, dstDir string, password string) error {
 
 	result := gcm.Seal(nonce, nonce, buffer, nil)
 
-	_, fName := filepath.Split(src)
-	if dstDir == "" {
-		dstDir = fName
-	} else {
-		dstDir = filepath.Join(dstDir)
-		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
-			os.MkdirAll(dstDir, 0777)
-		}
-		dstDir = filepath.Join(dstDir, fName)
+	dst, err := prepareDst(src, dstDir, ".crp", false)
+	if err != nil {
+		return err
 	}
-	dstDir += ".crp"
 
-	err = os.WriteFile(dstDir, result, 0666)
+	err = os.WriteFile(dst, result, 0666)
 	if err != nil {
 		return err
 	}
@@ -74,20 +67,12 @@ func Decrypt(src string, dstDir string, password string) error {
 		return err
 	}
 
-	_, fName := filepath.Split(src)
-	fName = fName[:(len(fName) - 4)]
-
-	if dstDir == "" {
-		dstDir = fName
-	} else {
-		dstDir = filepath.Join(dstDir)
-		if _, err := os.Stat(dstDir); os.IsNotExist(err) {
-			os.MkdirAll(dstDir, 0777)
-		}
-		dstDir = filepath.Join(dstDir, fName)
+	dst, err := prepareDst(src, dstDir, ".crp", true)
+	if err != nil {
+		return err
 	}
 
-	err = os.WriteFile(dstDir, content, 0777)
+	err = os.WriteFile(dst, content, 0777)
 	if err != nil {
 		return err
 	}
