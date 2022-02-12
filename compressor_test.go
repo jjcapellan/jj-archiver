@@ -5,26 +5,26 @@ import (
 	"testing"
 )
 
-func TestUnZip(t *testing.T) {
+func TestDecompress(t *testing.T) {
 	src := "testmodels/packed.tar.gz"
 	dst1 := ""
 	defer os.Remove("packed.tar")
 
-	err := UnZip(src, dst1)
+	err := Decompress(src, dst1)
 	if err != nil {
-		t.Fatalf("Error uncompressing \"%s\" to \"%s\": %s", src, dst1, err)
+		t.Fatalf("Error decompressing \"%s\" to \"%s\": %s", src, dst1, err)
 	}
 	if !compareFiles("testmodels/packed.tar", "packed.tar") {
-		t.Fatalf("Not valid uncompressed file")
+		t.Fatalf("Not valid decompressed file")
 	}
 }
 
-func TestZip(t *testing.T) {
+func TestCompress(t *testing.T) {
 	src := "testmodels/packed.tar"
 	dst := "testzip"
 	defer os.RemoveAll("testzip/")
 
-	err := Zip(src, dst)
+	err := Compress(src, dst)
 	if err != nil {
 		t.Fatalf("Error compressing \"%s\" to \"%s\": %s", src, dst, err)
 	}

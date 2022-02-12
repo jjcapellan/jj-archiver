@@ -8,12 +8,12 @@ import (
 	"path/filepath"
 )
 
-// Unzip uncompress input file into output path.
+// Decompress decompress input file into output path.
 //
 // If output == "" then uses current directory.
 //
-// Example: Unzip("projects.gz", "user/projectsfolder")
-func UnZip(input string, output string) error {
+// Example: Decompress("projects.gz", "user/projectsfolder")
+func Decompress(input string, output string) error {
 	f, err := os.Open(input)
 	if err != nil {
 		return err
@@ -54,12 +54,12 @@ func UnZip(input string, output string) error {
 
 }
 
-// Zip compress input file into output path. ".gz" extension is added to output.
+// Compress compress input file into output path. ".gz" extension is added to output.
 //
 // If output == "" then generated file is saved in current directory.
 //
-// Example: Zip("folder1/myfile.tar", "") generates "./myfile.tar.gz"
-func Zip(input string, output string) error {
+// Example: Compress("folder1/myfile.tar", "") generates "./myfile.tar.gz"
+func Compress(input string, output string) error {
 	var buffer bytes.Buffer
 	zw := gzip.NewWriter(&buffer)
 
