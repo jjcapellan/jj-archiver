@@ -16,8 +16,8 @@ import (
 //
 // Password lenght can be any not zero value. The password is processed by
 // the SHA256 hash algorithm to generate a 256-bit key.
-func Encrypt(src string, dstDir string, password string) error {
-	buffer, err := readFile(src)
+func Encrypt(input string, output string, password string) error {
+	buffer, err := readFile(input)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func Encrypt(src string, dstDir string, password string) error {
 
 	result := gcm.Seal(nonce, nonce, buffer, nil)
 
-	dst, err := prepareDst(src, dstDir, ".crp", false)
+	dst, err := prepareDst(input, output, ".crp", false)
 	if err != nil {
 		return err
 	}
@@ -51,12 +51,12 @@ func Encrypt(src string, dstDir string, password string) error {
 // Decrypt decrypts file "src" into directory "dstDir" with the password
 // used previously for encryp it.
 // This function uses AES256 algorithm (mode GCM).
-func Decrypt(src string, dstDir string, password string) error {
-	if filepath.Ext(src) != ".crp" {
+func Decrypt(input string, output string, password string) error {
+	if filepath.Ext(input) != ".crp" {
 		return errors.New("Unrecognized file extension")
 	}
 
-	buffer, err := readFile(src)
+	buffer, err := readFile(input)
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func Decrypt(src string, dstDir string, password string) error {
 		return err
 	}
 
-	dst, err := prepareDst(src, dstDir, ".crp", true)
+	dst, err := prepareDst(input, output, ".crp", true)
 	if err != nil {
 		return err
 	}

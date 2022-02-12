@@ -41,12 +41,12 @@ func writeTarBody(path string, tw *tar.Writer) error {
 }
 
 // PackFolder packages a folder into a tar file ("output.tar")
-func PackFolder(folder string, output string) error {
+func PackFolder(input string, output string) error {
 	var buffer bytes.Buffer
 
 	tw := tar.NewWriter(&buffer)
 
-	fileNames, dirNames := listFolder(folder)
+	fileNames, dirNames := listFolder(input)
 
 	for _, path := range dirNames {
 		err := writeTarHeader(path, tw)
@@ -83,9 +83,9 @@ func PackFolder(folder string, output string) error {
 }
 
 // Unpack extracts all files from a tar file (src) to path dst
-func Unpack(src string, dst string) error {
+func Unpack(input string, output string) error {
 
-	file, err := os.Open(src)
+	file, err := os.Open(input)
 	defer file.Close()
 	if err != nil {
 		return err
@@ -102,7 +102,7 @@ func Unpack(src string, dst string) error {
 			return err
 		}
 
-		path := filepath.Join(dst, fHeader.Name)
+		path := filepath.Join(output, fHeader.Name)
 
 		if fHeader.Typeflag == tar.TypeDir {
 			os.MkdirAll(path, os.FileMode(fHeader.Mode))

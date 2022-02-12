@@ -11,8 +11,8 @@ import (
 // Unzip takes a gzip file (src) and uncompress it in dst directory.
 //
 // If destination is not defined (dst == "") then uses current directory.
-func UnZip(src string, dst string) error {
-	f, err := os.Open(src)
+func UnZip(input string, output string) error {
+	f, err := os.Open(input)
 	if err != nil {
 		return err
 	}
@@ -29,16 +29,16 @@ func UnZip(src string, dst string) error {
 
 	result, _ := ioutil.ReadAll(zr)
 
-	if dst == "" {
-		dst = fName
+	if output == "" {
+		output = fName
 	} else {
-		if _, err := os.Stat(dst); os.IsNotExist(err) {
-			os.MkdirAll(dst, 0777)
+		if _, err := os.Stat(output); os.IsNotExist(err) {
+			os.MkdirAll(output, 0777)
 		}
-		dst = filepath.Join(dst, fName)
+		output = filepath.Join(output, fName)
 	}
 
-	err = os.WriteFile(dst, result, 0777)
+	err = os.WriteFile(output, result, 0777)
 	if err != nil {
 		return err
 	}
@@ -58,17 +58,17 @@ func UnZip(src string, dst string) error {
 // If dstDir == "" then gz file is saved in current directory.
 //
 // Example: Zip("folder1/file.tar", "") produces "./file.tar.gz"
-func Zip(src string, dstDir string) error {
+func Zip(input string, output string) error {
 	var buffer bytes.Buffer
 	zw := gzip.NewWriter(&buffer)
 
-	b, err := readFile(src)
+	b, err := readFile(input)
 	if err != nil {
 		return err
 	}
 
 	// Saves original name in header
-	_, zw.Header.Name = filepath.Split(src)
+	_, zw.Header.Name = filepath.Split(input)
 
 	_, err = zw.Write(b)
 	if err != nil {
@@ -80,7 +80,7 @@ func Zip(src string, dstDir string) error {
 		return err
 	}
 
-	dst, err := prepareDst(src, dstDir, ".gz", false)
+	dst, err := prepareDst(input, output, ".gz", false)
 	if err != nil {
 		return err
 	}
