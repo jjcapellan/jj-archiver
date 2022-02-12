@@ -81,7 +81,7 @@ func Compress(input string, output string) error {
 		return err
 	}
 
-	dst, err := prepareDst(input, output, ".gz", false)
+	dst, err := prepareDst(input, output, extCompressed, false)
 	if err != nil {
 		return err
 	}

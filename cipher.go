@@ -39,7 +39,7 @@ func Encrypt(input string, output string, password string) error {
 
 	result := gcm.Seal(nonce, nonce, buffer, nil)
 
-	dst, err := prepareDst(input, output, ".crp", false)
+	dst, err := prepareDst(input, output, extEncrypted, false)
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func Encrypt(input string, output string, password string) error {
 //
 // Example: Decrypt("projects.tar.gz.crp", "") generates "./projects.tar.gz"
 func Decrypt(input string, output string, password string) error {
-	if filepath.Ext(input) != ".crp" {
+	if filepath.Ext(input) != extEncrypted {
 		return errors.New("Unrecognized file extension")
 	}
 
@@ -84,7 +84,7 @@ func Decrypt(input string, output string, password string) error {
 		return err
 	}
 
-	dst, err := prepareDst(input, output, ".crp", true)
+	dst, err := prepareDst(input, output, extEncrypted, true)
 	if err != nil {
 		return err
 	}

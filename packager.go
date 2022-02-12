@@ -77,7 +77,7 @@ func PackFolder(input string, output string) error {
 		os.MkdirAll(dir, 0777)
 	}
 
-	err := os.WriteFile(filepath.Join(dir, fName)+".tar", buffer.Bytes(), 0777)
+	err := os.WriteFile(filepath.Join(dir, fName)+extPacked, buffer.Bytes(), 0777)
 	if err != nil {
 		return err
 	}
