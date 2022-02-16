@@ -1,11 +1,18 @@
 package archiver
 
 import (
+	"hash/crc32"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 )
+
+func GetCRC32(fileName string) uint32 {
+	b, _ := readFile(fileName)
+	crc := crc32.Checksum(b, crc32.IEEETable)
+	return crc
+}
 
 // listFolder returns 2 slices with files and folders paths
 func listFolder(root string) (files []string, folders []string) {
