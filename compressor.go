@@ -93,3 +93,28 @@ func Compress(input string, output string) error {
 
 	return nil
 }
+
+func getGzipFooter(fileName string) ([]byte, error) {
+	f, err := os.Open(fileName)
+	defer f.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	fileInfo, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	fileSize := fileInfo.Size()
+
+	// Last 8 bytes of file -> CRC32 checksum of uncompresed file (4 bytes) + uncompresed file size (4 bytes)
+	buffer := make([]byte, 8)
+
+	_, err = f.ReadAt(buffer, fileSize-8)
+	if err != nil {
+		return nil, err
+	}
+
+	return buffer, nil
+}
