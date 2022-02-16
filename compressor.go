@@ -3,6 +3,7 @@ package archiver
 import (
 	"bytes"
 	"compress/gzip"
+	"encoding/binary"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -92,6 +93,15 @@ func Compress(input string, output string) error {
 	}
 
 	return nil
+}
+
+// GetDecompressedSize gets decompresed size of the gzip file.
+func GetDecompressedSize(fileName string) (uint32, error) {
+	footer, err := getGzipFooter(fileName)
+	if err != nil {
+		return 0, err
+	}
+	return binary.LittleEndian.Uint32(footer[4:]), nil
 }
 
 func getGzipFooter(fileName string) ([]byte, error) {

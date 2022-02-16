@@ -32,3 +32,23 @@ func TestCompress(t *testing.T) {
 		t.Fatalf("Not valid gzip format")
 	}
 }
+
+func TestGetDecompressedSize(t *testing.T) {
+	fName := "testmodels/packed.tar.gz"
+	gotSize, err := GetDecompressedSize(fName)
+	if err != nil {
+		t.Fatalf("Error: %s", err.Error())
+	}
+	f, err := os.Open("testmodels/packed.tar")
+	defer f.Close()
+	if err != nil {
+		t.Fatalf("Error: %s", err.Error())
+	}
+	fInfo, _ := f.Stat()
+
+	expectedSize := fInfo.Size()
+
+	if expectedSize != int64(gotSize) {
+		t.Fatalf("Expected size: %d Got size: %d", expectedSize, gotSize)
+	}
+}
