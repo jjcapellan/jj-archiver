@@ -95,6 +95,7 @@ func Compress(input string, output string) error {
 	return nil
 }
 
+// GetGzipCRC32 gets crc32 checksum of decompressed file stored in gzip file (fileName)
 func GetGzipCRC32(fileName string) (uint32, error) {
 	var size uint32
 	footer, err := getGzipFooter(fileName)

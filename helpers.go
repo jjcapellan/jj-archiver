@@ -9,6 +9,7 @@ import (
 	"unsafe"
 )
 
+// GetCRC32 gets the crc32 of any file using IEEE polynomial
 func GetCRC32(fileName string) uint32 {
 	b, _ := readFile(fileName)
 	crc := crc32.Checksum(b, crc32.IEEETable)
