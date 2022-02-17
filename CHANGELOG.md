@@ -1,3 +1,9 @@
+## v0.4.0
+Added some features to verify files.
+### New features
+* **GetCRC32(fileName string) (uint32, error)** returns the CRC32 checksum of any file using IEEE polynomial.
+* **GetGzipCRC32(fileName string) (uint32, error)** returns the CRC32 of decompressed file stored in the gzip file *fileName*.
+* **GetDecompressedSize(fileName string)(uint32, error)** returns the size of decompressed file stored in the gzip file *fileName*.
 ## v0.3.0
 Initial funcionalities was implemented.
 ### Features
