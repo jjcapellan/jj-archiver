@@ -10,10 +10,13 @@ import (
 )
 
 // GetCRC32 gets the crc32 of any file using IEEE polynomial
-func GetCRC32(fileName string) uint32 {
-	b, _ := readFile(fileName)
+func GetCRC32(fileName string) (uint32, error) {
+	b, err := readFile(fileName)
+	if err != nil {
+		return 0, err
+	}
 	crc := crc32.Checksum(b, crc32.IEEETable)
-	return crc
+	return crc, nil
 }
 
 func isLittleEndian() bool {
