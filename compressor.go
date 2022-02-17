@@ -96,20 +96,35 @@ func Compress(input string, output string) error {
 }
 
 func GetGzipCRC32(fileName string) (uint32, error) {
+	var size uint32
 	footer, err := getGzipFooter(fileName)
 	if err != nil {
 		return 0, err
 	}
-	return binary.LittleEndian.Uint32(footer[:4]), nil
+
+	if isLittleEndian() {
+		binary.LittleEndian.Uint32(footer[:4])
+	} else {
+		binary.BigEndian.Uint32(footer[:4])
+	}
+
+	return size, nil
 }
 
 // GetDecompressedSize gets decompresed size of the gzip file.
 func GetDecompressedSize(fileName string) (uint32, error) {
+	var size uint32
 	footer, err := getGzipFooter(fileName)
 	if err != nil {
 		return 0, err
 	}
-	return binary.LittleEndian.Uint32(footer[4:]), nil
+
+	if isLittleEndian() {
+		size = binary.LittleEndian.Uint32(footer[4:])
+	} else {
+		size = binary.BigEndian.Uint32(footer[4:])
+	}
+	return size, nil
 }
 
 func getGzipFooter(fileName string) ([]byte, error) {
