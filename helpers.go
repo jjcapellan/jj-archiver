@@ -6,12 +6,20 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"unsafe"
 )
 
 func GetCRC32(fileName string) uint32 {
 	b, _ := readFile(fileName)
 	crc := crc32.Checksum(b, crc32.IEEETable)
 	return crc
+}
+
+func isLittleEndian() bool {
+	p1 := new(int16)
+	*p1 = 1 // littleendian: [0x01 0x00] bigEndian: [0x00 0x01]
+	p2 := (*int8)(unsafe.Pointer(p1))
+	return *p2 == 1
 }
 
 // listFolder returns 2 slices with files and folders paths
