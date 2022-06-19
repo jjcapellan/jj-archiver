@@ -29,7 +29,7 @@ func writeTarHeader(path string, tw *tar.Writer) error {
 }
 
 func writeTarBody(path string, tw *tar.Writer) error {
-	body, err := readFile(path)
+	body, err := ReadFile(path)
 	if err != nil {
 		return err
 	}

@@ -9,8 +9,8 @@ import (
 // compareFiles returns true if file1 == file2
 func compareFiles(file1 string, file2 string) bool {
 
-	b1, _ := readFile(file1)
-	b2, _ := readFile(file2)
+	b1, _ := ReadFile(file1)
+	b2, _ := ReadFile(file2)
 
 	if len(b1) != len(b2) {
 		return false
@@ -64,7 +64,7 @@ func TestUnpack(t *testing.T) {
 	dst := "tmp"
 	src := "testmodels/packed.tar"
 	os.Mkdir(dst, 0777)
-	input, err := readFile(src)
+	input, err := ReadFile(src)
 	if err != nil {
 		t.Fatalf("Error reading file")
 	}

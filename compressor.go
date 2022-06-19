@@ -64,7 +64,7 @@ func Compress(input string, output string) error {
 	var buffer bytes.Buffer
 	zw := gzip.NewWriter(&buffer)
 
-	b, err := readFile(input)
+	b, err := ReadFile(input)
 	if err != nil {
 		return err
 	}

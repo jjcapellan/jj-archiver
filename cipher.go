@@ -21,7 +21,7 @@ import (
 //
 // Example: Encrypt("projects.tar.gz", "") generates "./projects.tar.gz.crp"
 func Encrypt(input string, output string, password string) error {
-	buffer, err := readFile(input)
+	buffer, err := ReadFile(input)
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func Decrypt(input string, output string, password string) error {
 		return errors.New("Unrecognized file extension")
 	}
 
-	buffer, err := readFile(input)
+	buffer, err := ReadFile(input)
 	if err != nil {
 		return err
 	}

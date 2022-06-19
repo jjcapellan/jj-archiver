@@ -11,7 +11,7 @@ import (
 
 // GetCRC32 gets the crc32 of any file using IEEE polynomial
 func GetCRC32(fileName string) (uint32, error) {
-	b, err := readFile(fileName)
+	b, err := ReadFile(fileName)
 	if err != nil {
 		return 0, err
 	}
@@ -73,7 +73,7 @@ func prepareDst(src string, dstDir string, ext string, removeExt bool) (dst stri
 	return dstDir, nil
 }
 
-func readFile(fileName string) ([]byte, error) {
+func ReadFile(fileName string) ([]byte, error) {
 	f, err := os.Open(fileName)
 	defer f.Close()
 	if err != nil {
