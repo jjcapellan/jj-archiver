@@ -64,7 +64,11 @@ func TestUnpack(t *testing.T) {
 	dst := "tmp"
 	src := "testmodels/packed.tar"
 	os.Mkdir(dst, 0777)
-	err := Unpack(src, dst)
+	input, err := readFile(src)
+	if err != nil {
+		t.Fatalf("Error reading file")
+	}
+	err = Unpack(input, dst)
 	if err != nil {
 		t.Fatalf("Error unpacking")
 	}

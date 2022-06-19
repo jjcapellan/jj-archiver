@@ -85,16 +85,12 @@ func PackFolder(input string, output string) error {
 	return nil
 }
 
-// Unpack extracts all files from input tar file to output path.
+// Unpack extracts all files []byte of the input tar file to output path.
 //
-// Example: Unpack("packedfiles/myfile.tar", "unpackedfolders/folder1")
-func Unpack(input string, output string) error {
+// Example: Unpack(fileBytesArray, "unpackedfolders/folder1")
+func Unpack(input []byte, output string) error {
 
-	file, err := os.Open(input)
-	defer file.Close()
-	if err != nil {
-		return err
-	}
+	file := bytes.NewReader(input)
 
 	tr := tar.NewReader(file)
 
