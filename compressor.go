@@ -55,44 +55,33 @@ func Decompress(input string, output string) error {
 
 }
 
-// Compress compress input file into output path. ".gz" extension is added to output.
+// Compress compress bytes array of file into another bytes array.
 //
-// If output == "" then generated file is saved in current directory.
+// fileName could include relative file path. It is stored in the header of the compressed file.
 //
-// Example: Compress("folder1/myfile.tar", "") generates "./myfile.tar.gz"
-func Compress(input string, output string) error {
+// This param is important to preserve the original name of the file when uncompressed.
+//
+// Example: Compress(filedata, "folder/uncompressedfile.ext")
+func Compress(fileData []byte, fileName string) (error, []byte) {
 	var buffer bytes.Buffer
 	zw := gzip.NewWriter(&buffer)
 
-	b, err := ReadFile(input)
-	if err != nil {
-		return err
-	}
-
 	// Saves original name in header
-	_, zw.Header.Name = filepath.Split(input)
+	_, zw.Header.Name = filepath.Split(fileName)
 
-	_, err = zw.Write(b)
+	_, err := zw.Write(fileData)
 	if err != nil {
-		return err
+		return err, nil
 	}
 
 	err = zw.Close()
 	if err != nil {
-		return err
+		return err, nil
 	}
 
-	dst, err := prepareDst(input, output, extCompressed, false)
-	if err != nil {
-		return err
-	}
+	data := buffer.Bytes()
 
-	err = os.WriteFile(dst, buffer.Bytes(), 0666)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return nil, data
 }
 
 // GetGzipCRC32 gets crc32 checksum of decompressed file stored in gzip file (fileName)

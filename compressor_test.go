@@ -21,14 +21,25 @@ func TestDecompress(t *testing.T) {
 
 func TestCompress(t *testing.T) {
 	src := "testmodels/packed.tar"
-	dst := "testzip"
+	dst := "testzip/packed.tar.gz"
 	defer os.RemoveAll("testzip/")
 
-	err := Compress(src, dst)
+	srcData, err := ReadFile(src)
 	if err != nil {
-		t.Fatalf("Error compressing \"%s\" to \"%s\": %s", src, dst, err)
+		t.Fatalf("Error reading file %s: %s", src, err)
 	}
-	if !compareFiles(src+".gz", dst+"/packed.tar.gz") {
+
+	err, dstData := Compress(srcData, src)
+	if err != nil {
+		t.Fatalf("Error compressing %s: %s", src, err)
+	}
+
+	err = WriteFile(dst, dstData, 0666)
+	if err != nil {
+		t.Fatalf("Error writing file %s : %s", dst, err)
+	}
+
+	if !compareFiles(src+".gz", dst) {
 		t.Fatalf("Not valid gzip format")
 	}
 }
