@@ -96,3 +96,15 @@ func ReadFile(fileName string) ([]byte, error) {
 
 	return buffer, nil
 }
+
+func WriteFile(filePath string, data []byte, perm os.FileMode) error {
+	dir, fileName := filepath.Split(filePath)
+
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		os.MkdirAll(dir, 0777)
+	}
+
+	err := os.WriteFile(filepath.Join(dir, fileName), data, perm)
+
+	return err
+}
