@@ -5,10 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
-	"errors"
 	"io"
-	"os"
-	"path/filepath"
 )
 
 // Encrypt encrypts input []byte into output []byte using the password.
@@ -34,49 +31,25 @@ func Encrypt(input []byte, password string) (output []byte, e error) {
 	return result, nil
 }
 
-// Decrypt decrypts input file into output path using the password.
+// Decrypt decrypts input []byte] into output []byte using the password.
 // This function uses AES256 algorithm (mode GCM).
-//
-// Input file must have the extension ".crp"
-//
-// If output == "" then uses current directory.
-//
-// Example: Decrypt("projects.tar.gz.crp", "") generates "./projects.tar.gz"
-func Decrypt(input string, output string, password string) error {
-	if filepath.Ext(input) != extEncrypted {
-		return errors.New("Unrecognized file extension")
-	}
-
-	buffer, err := ReadFile(input)
-	if err != nil {
-		return err
-	}
+func Decrypt(input []byte, password string) (output []byte, e error) {
 
 	gcm, err := getGCM(password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	s := gcm.NonceSize()
 
-	nonce, cipherContent := buffer[:s], buffer[s:]
+	nonce, cipherContent := input[:s], input[s:]
 
-	content, err := gcm.Open(nil, nonce, cipherContent, nil)
+	result, err := gcm.Open(nil, nonce, cipherContent, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	dst, err := prepareDst(input, output, extEncrypted, true)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(dst, content, 0777)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return result, nil
 }
 
 //// HELPERS
