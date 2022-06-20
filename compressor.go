@@ -62,7 +62,7 @@ func Decompress(input string, output string) error {
 // This param is important to preserve the original name of the file when uncompressed.
 //
 // Example: Compress(filedata, "folder/uncompressedfile.ext")
-func Compress(fileData []byte, fileName string) (error, []byte) {
+func Compress(fileData []byte, fileName string) ([]byte, error) {
 	var buffer bytes.Buffer
 	zw := gzip.NewWriter(&buffer)
 
@@ -71,17 +71,17 @@ func Compress(fileData []byte, fileName string) (error, []byte) {
 
 	_, err := zw.Write(fileData)
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	err = zw.Close()
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	data := buffer.Bytes()
 
-	return nil, data
+	return data, nil
 }
 
 // GetGzipCRC32 gets crc32 checksum of decompressed file stored in gzip file (fileName)

@@ -28,7 +28,7 @@ func TestPackFolder(t *testing.T) {
 	output1 := "unpackfolder1/packed.tar"
 	defer os.RemoveAll("unpackfolder1/")
 
-	err, data := PackFolder(folder)
+	data, err := PackFolder(folder)
 	if err != nil {
 		t.Fatalf("Error packaging folder \"testfolder\" in \"%s\": %s", output1, err)
 	}

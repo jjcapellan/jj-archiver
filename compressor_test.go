@@ -29,7 +29,7 @@ func TestCompress(t *testing.T) {
 		t.Fatalf("Error reading file %s: %s", src, err)
 	}
 
-	err, dstData := Compress(srcData, src)
+	dstData, err := Compress(srcData, src)
 	if err != nil {
 		t.Fatalf("Error compressing %s: %s", src, err)
 	}

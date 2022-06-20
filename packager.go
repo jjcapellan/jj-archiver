@@ -44,7 +44,7 @@ func writeTarBody(path string, tw *tar.Writer) error {
 // This array can be used to write a tar file, or to process in another function.
 //
 // Example: PackFolder("user/projectsfolder") returns []byte of the packed file
-func PackFolder(input string) (error, []byte) {
+func PackFolder(input string) ([]byte, error) {
 	var buffer bytes.Buffer
 
 	tw := tar.NewWriter(&buffer)
@@ -54,18 +54,18 @@ func PackFolder(input string) (error, []byte) {
 	for _, path := range dirNames {
 		err := writeTarHeader(path, tw)
 		if err != nil {
-			return err, nil
+			return nil, err
 		}
 	}
 
 	for _, path := range fileNames {
 		err := writeTarHeader(path, tw)
 		if err != nil {
-			return err, nil
+			return nil, err
 		}
 		err = writeTarBody(path, tw)
 		if err != nil {
-			return err, nil
+			return nil, err
 		}
 	}
 
@@ -73,7 +73,7 @@ func PackFolder(input string) (error, []byte) {
 
 	data := buffer.Bytes()
 
-	return nil, data
+	return data, nil
 }
 
 // Unpack extracts all files []byte of the input tar file to output path.
