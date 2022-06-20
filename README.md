@@ -9,55 +9,35 @@ A simple convenience utility library to **pack** (tar), **compress** (gzip) and 
 import . "github.com/jjcapellan/jj-archiver"
 // ...
 
-// Pack folder "user/projects" into file "./projects.tar"
-err := PackFolder("user/projects", "projects")
-if err!= nil {
- //   ...
-}
+// This code packages, compresses and encrypts a directory ("user/projects").
 
-// Compress file "projects.tar" into "user/compressed/projects.tar.gz"
-err := Compress("projects.tar", "user/compressed")
-if err!= nil {
- //   ...
-}
-
-// Encrypt file "user/compressed/projects.tar.gz" into "./projects.tar.gz.crp"
-err := Encrypt("user/compressed/projects.tar.gz", "", "mypassword")
-if err!= nil {
- //   ...
-}
-
-// Decrypt file "./projects.tar.gz.crp" into "./projects.tar.gz"
-err := Decrypt("projects.tar.gz.crp","", "mypassword")
-if err!= nil {
- //   ...
-}
-
-// Decompress file "./projects.tar.gz" into "./projects.tar"
-err := Decompress("projects.tar.gz", "")
-if err!= nil {
- //   ...
-}
-
-// Unpack file "./projects.tar" in folder "user/copyfolder"
-err := Unpack("projects.tar", "user/copyfolder")
-if err!= nil {
- //   ...
-}
-
-// Get uncompressed file size (bytes)
-size, err := GetDecompressedSize("projects.tar.gz")
-if err != nil {
+// 1. Directory Packaging into a tar []byte (packedData) using PackFolder()
+packedData, err := PackFolder("user/projects")
+if err != nil{
     // ...
 }
 
-// Verify compressed file using crc32 checksum
-fileCRC32, _ := GetCRC32("projects.tar")
-gzipCRC32, _ := GetGzipCRC32("projects.tar.gz")
-isValid := (fileCRC32 == gzipCRC32)
+// 2. Compression process using Compress(). gzipData is a compressed []byte.
+// The second param is the file name to store in the header name of the gzip file
+gzipData, err := Compress(packedData, "projects.gz")
+if err != nil{
+    //...
+}
 
+// 3. Encryption process using Encrypt(). encryptedData is an encrypted []byte
+encryptedData, err := Encrypt(gzipData, "mypassword")
+if err != nil{
+    //...
+}
+
+// 4. Write the result into a file named "backups/projects.crp" using WriteFile
+err = WriteFile("backups/projects.crp", encryptedData)
+if err != nil{
+    //...
+}
 
 ```
+Api docs available here: https://pkg.go.dev/github.com/jjcapellan/jj-archiver
 
 ## Dependencies
 This library is built over standard golang libraries, so it hasn't external dependencies.
