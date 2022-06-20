@@ -10,9 +10,9 @@ import (
 )
 
 // Decompress decompress bytes array of file into another bytes array.
-func Decompress(fileData []byte) (output []byte, fileName string, e error) {
+func Decompress(input []byte) (output []byte, fileName string, e error) {
 
-	f := bytes.NewReader(fileData)
+	f := bytes.NewReader(input)
 
 	zr, err := gzip.NewReader(f)
 	if err != nil {
@@ -41,14 +41,14 @@ func Decompress(fileData []byte) (output []byte, fileName string, e error) {
 // This param is important to preserve the original name of the file when uncompressed.
 //
 // Example: Compress(filedata, "folder/uncompressedfile.ext")
-func Compress(fileData []byte, fileName string) ([]byte, error) {
+func Compress(input []byte, fileName string) ([]byte, error) {
 	var buffer bytes.Buffer
 	zw := gzip.NewWriter(&buffer)
 
 	// Saves original name in header
 	_, zw.Header.Name = filepath.Split(fileName)
 
-	_, err := zw.Write(fileData)
+	_, err := zw.Write(input)
 	if err != nil {
 		return nil, err
 	}
