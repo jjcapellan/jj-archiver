@@ -11,45 +11,27 @@ import (
 	"path/filepath"
 )
 
-// Encrypt encrypts input file into output path using the password.
+// Encrypt encrypts input []byte into output []byte using the password.
 // This function uses AES256 algorithm (mode GCM).
 //
 // Password lenght can be any not zero value. The password is processed by
 // the SHA256 hash algorithm to generate a 256-bit key.
-//
-// If output == "" then uses current directory.
-//
-// Example: Encrypt("projects.tar.gz", "") generates "./projects.tar.gz.crp"
-func Encrypt(input string, output string, password string) error {
-	buffer, err := ReadFile(input)
-	if err != nil {
-		return err
-	}
+func Encrypt(input []byte, password string) (output []byte, e error) {
 
 	gcm, err := getGCM(password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	nonce := make([]byte, gcm.NonceSize())
 
 	if _, err := io.ReadFull(rand.Reader, nonce); err != nil {
-		return err
+		return nil, err
 	}
 
-	result := gcm.Seal(nonce, nonce, buffer, nil)
+	result := gcm.Seal(nonce, nonce, input, nil)
 
-	dst, err := prepareDst(input, output, extEncrypted, false)
-	if err != nil {
-		return err
-	}
-
-	err = os.WriteFile(dst, result, 0666)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return result, nil
 }
 
 // Decrypt decrypts input file into output path using the password.
