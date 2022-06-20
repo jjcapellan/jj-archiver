@@ -40,11 +40,11 @@ func writeTarBody(path string, tw *tar.Writer) error {
 	return nil
 }
 
-// PackFolder packs input folder into output tar file.
-// ".tar" extension is added to the output file name.
+// PackFolder packs input folder into an array of bytes.
+// This array can be used to write a tar file, or to process in another function.
 //
-// Example: PackFolder("user/projectsfolder", "projects") generates "./projects.tar"
-func PackFolder(input string, output string) error {
+// Example: PackFolder("user/projectsfolder") returns []byte of the packed file
+func PackFolder(input string) (error, []byte) {
 	var buffer bytes.Buffer
 
 	tw := tar.NewWriter(&buffer)
@@ -54,35 +54,26 @@ func PackFolder(input string, output string) error {
 	for _, path := range dirNames {
 		err := writeTarHeader(path, tw)
 		if err != nil {
-			return err
+			return err, nil
 		}
 	}
 
 	for _, path := range fileNames {
 		err := writeTarHeader(path, tw)
 		if err != nil {
-			return err
+			return err, nil
 		}
 		err = writeTarBody(path, tw)
 		if err != nil {
-			return err
+			return err, nil
 		}
 	}
 
 	tw.Close()
 
-	dir, fName := filepath.Split(output)
+	data := buffer.Bytes()
 
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		os.MkdirAll(dir, 0777)
-	}
-
-	err := os.WriteFile(filepath.Join(dir, fName)+extPacked, buffer.Bytes(), 0777)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return nil, data
 }
 
 // Unpack extracts all files []byte of the input tar file to output path.
