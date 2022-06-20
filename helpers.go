@@ -73,6 +73,14 @@ func ReadFile(fileName string) ([]byte, error) {
 	return buffer, nil
 }
 
+// WriteFile writes a []byte into a file
+//
+// filePath: complete path of the file (example: folder1/file.ext).
+// It will create a directory if necessary.
+//
+// data: content to write
+//
+// perm: file permissions. Example: 666, 746, ...
 func WriteFile(filePath string, data []byte, perm os.FileMode) error {
 	dir, fileName := filepath.Split(filePath)
 
