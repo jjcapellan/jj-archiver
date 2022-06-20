@@ -7,13 +7,23 @@ import (
 
 func TestDecompress(t *testing.T) {
 	src := "testmodels/packed.tar.gz"
-	dst1 := ""
 	defer os.Remove("packed.tar")
 
-	err := Decompress(src, dst1)
+	srcData, err := ReadFile(src)
 	if err != nil {
-		t.Fatalf("Error decompressing \"%s\" to \"%s\": %s", src, dst1, err)
+		t.Fatalf("Error reading file %s: %s", src, err)
 	}
+
+	outputData, fileName, err := Decompress(srcData)
+	if err != nil {
+		t.Fatalf("Error decompressing %s: %s", src, err)
+	}
+
+	err = WriteFile(fileName, outputData, 0666)
+	if err != nil {
+		t.Fatalf("Error writing file %s : %s", fileName, err)
+	}
+
 	if !compareFiles("testmodels/packed.tar", "packed.tar") {
 		t.Fatalf("Not valid decompressed file")
 	}

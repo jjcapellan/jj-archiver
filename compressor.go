@@ -9,49 +9,28 @@ import (
 	"path/filepath"
 )
 
-// Decompress decompress input file into output path.
-//
-// If output == "" then uses current directory.
-//
-// Example: Decompress("projects.gz", "user/projectsfolder")
-func Decompress(input string, output string) error {
-	f, err := os.Open(input)
-	if err != nil {
-		return err
-	}
+// Decompress decompress bytes array of file into another bytes array.
+func Decompress(fileData []byte) (output []byte, fileName string, e error) {
+
+	f := bytes.NewReader(fileData)
 
 	zr, err := gzip.NewReader(f)
 	if err != nil {
-		return err
+		return nil, "", err
 	}
 
 	fName := zr.Name
 
 	defer zr.Close()
-	defer f.Close()
 
 	result, _ := ioutil.ReadAll(zr)
 
-	if output == "" {
-		output = fName
-	} else {
-		if _, err := os.Stat(output); os.IsNotExist(err) {
-			os.MkdirAll(output, 0777)
-		}
-		output = filepath.Join(output, fName)
-	}
-
-	err = os.WriteFile(output, result, 0777)
-	if err != nil {
-		return err
-	}
-
 	err = zr.Close()
 	if err != nil {
-		return err
+		return nil, "", err
 	}
 
-	return nil
+	return result, fName, nil
 
 }
 
