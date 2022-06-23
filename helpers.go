@@ -27,7 +27,7 @@ func isLittleEndian() bool {
 }
 
 // listFolder returns 2 slices with files and folders paths
-func listFolder(root string, basePath string) (files []string, folders []string) {
+func listFolder(root string) (files []string, folders []string) {
 	var fls []string
 	var dirs []string
 
@@ -36,15 +36,12 @@ func listFolder(root string, basePath string) (files []string, folders []string)
 		log.Println("Error listing file paths: root folder not found")
 	}
 
-	// Removes path of target folder
-	relPath, _ := filepath.Rel(basePath, root)
-
 	for _, fileInfo := range folderInfo {
 		if !fileInfo.IsDir() {
-			fls = append(fls, filepath.Join(relPath, fileInfo.Name()))
+			fls = append(fls, filepath.Join(root, fileInfo.Name()))
 		} else {
-			dirs = append(dirs, filepath.Join(relPath, fileInfo.Name()))
-			subFls, subDirs := listFolder(filepath.Join(root, fileInfo.Name()), basePath)
+			dirs = append(dirs, filepath.Join(root, fileInfo.Name()))
+			subFls, subDirs := listFolder(filepath.Join(root, fileInfo.Name()))
 			dirs = append(dirs, subDirs...)
 			fls = append(fls, subFls...)
 		}

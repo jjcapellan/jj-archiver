@@ -8,7 +8,10 @@ import (
 	"path/filepath"
 )
 
-func writeTarHeader(path string, tw *tar.Writer) error {
+func writeTarHeader(path string, tw *tar.Writer, basePath string) error {
+
+	relPath, _ := filepath.Rel(basePath, path)
+
 	fInfo, err := os.Stat(path)
 	if err != nil {
 		return err
@@ -19,7 +22,7 @@ func writeTarHeader(path string, tw *tar.Writer) error {
 		return err
 	}
 
-	fHeader.Name = path
+	fHeader.Name = relPath
 	err = tw.WriteHeader(fHeader)
 	if err != nil {
 		return err
@@ -51,17 +54,17 @@ func PackFolder(input string) ([]byte, error) {
 
 	basePath := filepath.Dir(input)
 
-	fileNames, dirNames := listFolder(input, basePath)
+	fileNames, dirNames := listFolder(input)
 
 	for _, path := range dirNames {
-		err := writeTarHeader(path, tw)
+		err := writeTarHeader(path, tw, basePath)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	for _, path := range fileNames {
-		err := writeTarHeader(path, tw)
+		err := writeTarHeader(path, tw, basePath)
 		if err != nil {
 			return nil, err
 		}
