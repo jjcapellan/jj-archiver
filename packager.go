@@ -49,7 +49,9 @@ func PackFolder(input string) ([]byte, error) {
 
 	tw := tar.NewWriter(&buffer)
 
-	fileNames, dirNames := listFolder(input)
+	basePath := filepath.Dir(input)
+
+	fileNames, dirNames := listFolder(input, basePath)
 
 	for _, path := range dirNames {
 		err := writeTarHeader(path, tw)
