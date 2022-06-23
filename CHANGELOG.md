@@ -1,3 +1,7 @@
+## v0.5.1
+* **Fix** : *PackFolder()* stored absolute paths. Now only the target folder is stored.
+---
+
 ## v0.5.0
 Important: this version has api breaking changes.  
 Almost every functions were modified to allow apply several processes over a file without write on disc until the last process.
