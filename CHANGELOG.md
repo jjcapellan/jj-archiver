@@ -1,3 +1,7 @@
+## v0.5.2
+* **Fix** : The previous version changes broke the functionality of *PackFolder* with absolute paths. Now it works as expected.
+---
+
 ## v0.5.1
 * **Fix** : *PackFolder()* stored absolute paths. Now only the target folder is stored.
 ---
