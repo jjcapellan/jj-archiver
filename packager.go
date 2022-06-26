@@ -56,6 +56,11 @@ func PackFolder(input string) ([]byte, error) {
 
 	fileNames, dirNames := listFolder(input)
 
+	// At least the root folder must be included in tar file headers
+	if len(dirNames) == 0 {
+		dirNames = append(dirNames, input)
+	}
+
 	for _, path := range dirNames {
 		err := writeTarHeader(path, tw, basePath)
 		if err != nil {
