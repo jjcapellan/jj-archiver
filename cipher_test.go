@@ -6,7 +6,7 @@ import (
 )
 
 func TestDecrypt(t *testing.T) {
-	src := "testmodels/packed.tar.gz.crp"
+	src := "test_assets/testmodels/packed.tar.gz.crp"
 	dst := "testdecrypt/packed.tar.gz"
 	password := "axdcf"
 	defer os.RemoveAll("testdecrypt/")
@@ -26,13 +26,13 @@ func TestDecrypt(t *testing.T) {
 		t.Fatalf("Error writing file %s : %s", dst, err)
 	}
 
-	if !compareFiles("testmodels/packed.tar.gz", "testdecrypt/packed.tar.gz") {
+	if !compareFiles("test_assets/testmodels/packed.tar.gz", "testdecrypt/packed.tar.gz") {
 		t.Fatalf("Not valid decrypted file")
 	}
 }
 
 func TestEncrypt(t *testing.T) {
-	src := "testmodels/packed.tar.gz"
+	src := "test_assets/testmodels/packed.tar.gz"
 	dst := "testencrypt/packed.tar.gz.crp"
 	password := "axdcf"
 	defer os.RemoveAll("testencrypt/")
@@ -62,7 +62,7 @@ func TestEncrypt(t *testing.T) {
 		t.Fatalf("Error writing file testencrypt/packed.tar.gz : %s", err)
 	}
 
-	if !compareFiles("testmodels/packed.tar.gz", "testencrypt/packed.tar.gz") {
+	if !compareFiles("test_assets/testmodels/packed.tar.gz", "testencrypt/packed.tar.gz") {
 		t.Fatalf("Not valid encrypted file")
 	}
 }

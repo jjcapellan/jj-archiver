@@ -6,7 +6,7 @@ import (
 )
 
 func TestDecompress(t *testing.T) {
-	src := "testmodels/packed.tar.gz"
+	src := "test_assets/testmodels/packed.tar.gz"
 	defer os.Remove("packed.tar")
 
 	srcData, err := ReadFile(src)
@@ -24,13 +24,13 @@ func TestDecompress(t *testing.T) {
 		t.Fatalf("Error writing file %s : %s", fileName, err)
 	}
 
-	if !compareFiles("testmodels/packed.tar", "packed.tar") {
+	if !compareFiles("test_assets/testmodels/packed.tar", "packed.tar") {
 		t.Fatalf("Not valid decompressed file")
 	}
 }
 
 func TestCompress(t *testing.T) {
-	src := "testmodels/packed.tar"
+	src := "test_assets/testmodels/packed.tar"
 	dst := "testzip/packed.tar.gz"
 	defer os.RemoveAll("testzip/")
 
@@ -55,12 +55,12 @@ func TestCompress(t *testing.T) {
 }
 
 func TestGetDecompressedSize(t *testing.T) {
-	fName := "testmodels/packed.tar.gz"
+	fName := "test_assets/testmodels/packed.tar.gz"
 	gotSize, err := GetDecompressedSize(fName)
 	if err != nil {
 		t.Fatalf("Error: %s", err.Error())
 	}
-	f, err := os.Open("testmodels/packed.tar")
+	f, err := os.Open("test_assets/testmodels/packed.tar")
 	defer f.Close()
 	if err != nil {
 		t.Fatalf("Error: %s", err.Error())
