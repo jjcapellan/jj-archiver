@@ -52,31 +52,9 @@ func PackFolder(input string) ([]byte, error) {
 
 	tw := tar.NewWriter(&buffer)
 
-	basePath := filepath.Dir(input)
-
-	fileNames, dirNames := listFolder(input)
-
-	// At least the root folder must be included in tar file headers
-	if len(dirNames) == 0 {
-		dirNames = append(dirNames, input)
-	}
-
-	for _, path := range dirNames {
-		err := writeTarHeader(path, tw, basePath)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	for _, path := range fileNames {
-		err := writeTarHeader(path, tw, basePath)
-		if err != nil {
-			return nil, err
-		}
-		err = writeTarBody(path, tw)
-		if err != nil {
-			return nil, err
-		}
+	err := writeFolderHeaders(input, tw)
+	if err != nil {
+		return nil, err
 	}
 
 	tw.Close()
@@ -131,4 +109,35 @@ func Unpack(input []byte, output string) error {
 			}
 		}
 	} // End for
+}
+
+func writeFolderHeaders(input string, tw *tar.Writer) error {
+	basePath := filepath.Dir(input)
+
+	fileNames, dirNames := listFolder(input)
+
+	// At least the root folder must be included in tar file headers
+	if len(dirNames) == 0 {
+		dirNames = append(dirNames, input)
+	}
+
+	for _, path := range dirNames {
+		err := writeTarHeader(path, tw, basePath)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, path := range fileNames {
+		err := writeTarHeader(path, tw, basePath)
+		if err != nil {
+			return err
+		}
+		err = writeTarBody(path, tw)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
