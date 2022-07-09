@@ -26,7 +26,7 @@ Two helper functions are now public to allow us to write and read files when nec
 * **Decrypt(input []byte, password string) (output []byte, e error)** : decrypts *input* into *output*.
 * **Compress(input []byte, fileName string) ([]byte, error)** : compress *input* into *output*. *fileName* will be stored in gzip file header.
 * **Decompress(input []byte) (output []byte, fileName string, e error)** : decompress *input* file into *output*.
-* **PackFolder(input string) ([]byte, error)** : packs *input* file into []byte.
+* **PackFolder(input string) ([]byte, error)** : packs *input* folder into []byte.
 * **Unpack(input []byte, output string) error** : unpacks *input* into *output* path.  
 ---  
 
