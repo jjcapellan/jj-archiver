@@ -8,41 +8,6 @@ import (
 	"path/filepath"
 )
 
-func writeTarHeader(path string, tw *tar.Writer, basePath string) error {
-
-	relPath, _ := filepath.Rel(basePath, path)
-
-	fInfo, err := os.Stat(path)
-	if err != nil {
-		return err
-	}
-
-	fHeader, err := tar.FileInfoHeader(fInfo, "")
-	if err != nil {
-		return err
-	}
-
-	fHeader.Name = relPath
-	err = tw.WriteHeader(fHeader)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func writeTarBody(path string, tw *tar.Writer) error {
-	body, err := ReadFile(path)
-	if err != nil {
-		return err
-	}
-	_, err = tw.Write(body)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func PackArray(input []string) ([]byte, error) {
 	var buffer bytes.Buffer
 
@@ -146,6 +111,23 @@ func Unpack(input []byte, output string) error {
 	} // End for
 }
 
+func writeFileHeader(input string, tw *tar.Writer) error {
+
+	basePath := filepath.Dir(input)
+
+	err := writeTarHeader(input, tw, basePath)
+	if err != nil {
+		return err
+	}
+
+	err = writeTarBody(input, tw)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}
+
 func writeFolderHeaders(input string, tw *tar.Writer) error {
 	basePath := filepath.Dir(input)
 
@@ -177,19 +159,37 @@ func writeFolderHeaders(input string, tw *tar.Writer) error {
 	return nil
 }
 
-func writeFileHeader(input string, tw *tar.Writer) error {
-
-	basePath := filepath.Dir(input)
-
-	err := writeTarHeader(input, tw, basePath)
+func writeTarBody(path string, tw *tar.Writer) error {
+	body, err := ReadFile(path)
 	if err != nil {
 		return err
 	}
-
-	err = writeTarBody(input, tw)
+	_, err = tw.Write(body)
 	if err != nil {
 		return err
 	}
 	return nil
+}
 
+func writeTarHeader(path string, tw *tar.Writer, basePath string) error {
+
+	relPath, _ := filepath.Rel(basePath, path)
+
+	fInfo, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+
+	fHeader, err := tar.FileInfoHeader(fInfo, "")
+	if err != nil {
+		return err
+	}
+
+	fHeader.Name = relPath
+	err = tw.WriteHeader(fHeader)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
