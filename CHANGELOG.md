@@ -1,3 +1,7 @@
+## v0.6.0
+* **New feature**: *PackArray(input []string) ([]byte, error)* .  Packs *input* paths (files or folders) into []byte.
+---
+
 ## v0.5.3
 * **Fix** : *PackFolder* wont include root folder in tar file dirs headers when there aren't subfolders inside input folder. It creates inconsistency between file paths and the directory structure. Now the root folder is added to the folder array if it is empty.
 ---
