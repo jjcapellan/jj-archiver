@@ -63,23 +63,25 @@ func TestPackFolder2(t *testing.T) {
 	}
 }
 
-/*func TestUnpack(t *testing.T) {
-	dst := "tmp"
-	src := "testmodels/packed2.tar" //"testmodels/packed.tar"
-	//os.Mkdir(dst, 0777)
-	input, err := ReadFile(src)
+func TestPackArray1(t *testing.T) {
+	input := []string{"test_assets/testfolder2", "test_assets/testmodels/file6.txt"}
+	output := "unpackfolder3/packed.tar"
+
+	data, err := PackArray(input)
 	if err != nil {
-		t.Fatalf("Error reading file")
+		t.Fatalf("Error packaging folder \"%s\" in \"%s\": %s", input, output, err)
 	}
-	err = Unpack(input, dst)
+
+	err = WriteFile(output, data, 0666)
 	if err != nil {
-		t.Fatalf("Error unpacking: %s", err.Error())
+		t.Fatalf("Error writing file %s : %s", output, err)
 	}
-	/*if !compareFiles("testfolder/samples2/samples21/file6.txt", "tmp/testfolder/samples2/samples21/file6.txt") {
-		t.Fatalf("Not valid unpacked files")
+	defer os.RemoveAll("unpackfolder3/")
+
+	if !compareFiles(output, "test_assets/testmodels/packed3.tar") {
+		t.Fatalf("Not valid tar file format")
 	}
-	os.RemoveAll("tmp/")
-}*/
+}
 
 func TestUnpack1(t *testing.T) {
 	dst := "packed1"

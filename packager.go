@@ -43,6 +43,41 @@ func writeTarBody(path string, tw *tar.Writer) error {
 	return nil
 }
 
+func PackArray(input []string) ([]byte, error) {
+	var buffer bytes.Buffer
+
+	tw := tar.NewWriter(&buffer)
+
+	for _, fPath := range input {
+
+		fileInfo, err := os.Stat(fPath)
+		if err != nil {
+			return nil, err
+		}
+
+		if fileInfo.Mode().IsDir() {
+
+			err := writeFolderHeaders(fPath, tw)
+			if err != nil {
+				return nil, err
+			}
+			continue
+
+		}
+
+		err = writeFileHeader(fPath, tw)
+		if err != nil {
+			return nil, err
+		}
+	} // end for
+
+	tw.Close()
+
+	data := buffer.Bytes()
+
+	return data, nil
+}
+
 // PackFolder packs input folder into an array of bytes.
 // This array can be used to write a tar file, or to process in another function.
 //
@@ -140,4 +175,21 @@ func writeFolderHeaders(input string, tw *tar.Writer) error {
 	}
 
 	return nil
+}
+
+func writeFileHeader(input string, tw *tar.Writer) error {
+
+	basePath := filepath.Dir(input)
+
+	err := writeTarHeader(input, tw, basePath)
+	if err != nil {
+		return err
+	}
+
+	err = writeTarBody(input, tw)
+	if err != nil {
+		return err
+	}
+	return nil
+
 }
