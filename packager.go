@@ -8,6 +8,10 @@ import (
 	"path/filepath"
 )
 
+// PackArray packs folders and files of input string array into an array of bytes.
+// This array can be used to write a tar file, or to process in another function.
+//
+// Example: PackArray([]string{"myfolder/file.txt", "myfolder/folder2"}) returns []byte of the packed file
 func PackArray(input []string) ([]byte, error) {
 	var buffer bytes.Buffer
 
